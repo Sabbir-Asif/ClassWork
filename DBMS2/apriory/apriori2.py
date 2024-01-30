@@ -16,25 +16,25 @@ def calculate_item_support(initial_items, transactions):
                 item_counts[item] += 1
     return item_counts
 
-def generate_frequent_itemsets(initial_items, min_support, transactions):
+def generate_frequent_itemsets(initial_items, min_support, transactions, output_file):
     support_threshold = min_support
 
     item_support = calculate_item_support(initial_items, transactions)
 
-    print("C1:")
+    output_file.write("C1:\n")
     for item in item_support:
-        print(f"[{item}]: {item_support[item]}")
-    print()
+        output_file.write(f"[{item}]: {item_support[item]}\n")
+    output_file.write("\n")
 
     frequent_itemsets = Counter()
     for item in item_support:
         if item_support[item] >= support_threshold:
             frequent_itemsets[frozenset([item])] += item_support[item]
 
-    print("L1:")
+    output_file.write("L1:\n")
     for itemset in frequent_itemsets:
-        print(f"{list(itemset)}: {frequent_itemsets[itemset]}")
-    print()
+        output_file.write(f"{list(itemset)}: {frequent_itemsets[itemset]}\n")
+    output_file.write("\n")
 
     previous_frequent_itemsets = frequent_itemsets
     position = 1
@@ -57,20 +57,20 @@ def generate_frequent_itemsets(initial_items, min_support, transactions):
                 if candidate_set.issubset(transaction_set):
                     item_support[candidate_set] += 1
 
-        print(f"C{itemset_size}:")
+        output_file.write(f"C{itemset_size}:\n")
         for candidate_set in item_support:
-            print(f"{list(candidate_set)}: {item_support[candidate_set]}")
-        print()
+            output_file.write(f"{list(candidate_set)}: {item_support[candidate_set]}\n")
+        output_file.write("\n")
 
         frequent_itemsets = Counter()
         for candidate_set in item_support:
             if item_support[candidate_set] >= support_threshold:
                 frequent_itemsets[candidate_set] += item_support[candidate_set]
 
-        print(f"L{itemset_size}:")
+        output_file.write(f"L{itemset_size}:\n")
         for frequent_set in frequent_itemsets:
-            print(f"{list(frequent_set)}: {frequent_itemsets[frequent_set]}")
-        print()
+            output_file.write(f"{list(frequent_set)}: {frequent_itemsets[frequent_set]}\n")
+        output_file.write("\n")
 
         if not frequent_itemsets:
             break
@@ -78,15 +78,15 @@ def generate_frequent_itemsets(initial_items, min_support, transactions):
         previous_frequent_itemsets = frequent_itemsets
         position = itemset_size
 
-    print("Result:")
-    print(f"L{position}:")
+    output_file.write("Result:\n")
+    output_file.write(f"L{position}:\n")
     for frequent_set in previous_frequent_itemsets:
-        print(f"{list(frequent_set)}: {previous_frequent_itemsets[frequent_set]}")
-    print()
+        output_file.write(f"{list(frequent_set)}: {previous_frequent_itemsets[frequent_set]}\n")
+    output_file.write("\n")
 
     return previous_frequent_itemsets
 
-def generate_association_rules(frequent_itemsets, transactions):
+def generate_association_rules(frequent_itemsets, transactions, output_file):
     result = []
 
     for itemset in frequent_itemsets:
@@ -111,23 +111,22 @@ def generate_association_rules(frequent_itemsets, transactions):
             result.append((list(a), list(b), confidence_a_b))
             result.append((list(b), list(a), confidence_b_a))
 
-    return result
-
-def write_output(output_file_path, result):
-    with open(output_file_path, 'w') as output_file:
-        for combination in result:
-            output_file.write(f"{combination[0]} -> {combination[1]} = {combination[2]:.2f}%\n")
+    output_file.write("Association Rules:\n")
+    for combination in result:
+        output_file.write(f"{combination[0]} -> {combination[1]} = {combination[2]:.2f}%\n")
 
 # Example usage:
-file_path = 'input3.txt'
+file_path = 'input500.txt'
 out_path = 'output.txt'
-min_support_count = 2  #int(input("Enter minimum support count: "))
+min_support_count = 10
 
-start_time = time.time()
-transactions_data = load_data(file_path)
-initial_items = set(item for transaction in transactions_data for item in transaction)
-frequent_itemsets_result = generate_frequent_itemsets(initial_items, min_support_count, transactions_data)
-association_rules_result = generate_association_rules(frequent_itemsets_result, transactions_data)
-end_time = time.time()
-write_output('output.txt', association_rules_result)
-print(f"execution time : : {abs(start_time - end_time)}")
+with open(out_path, 'w') as output_file:
+    start_time = time.time()
+    transactions_data = load_data(file_path)
+    initial_items = set(item for transaction in transactions_data for item in transaction)
+    frequent_itemsets_result = generate_frequent_itemsets(initial_items, min_support_count, transactions_data, output_file)
+    generate_association_rules(frequent_itemsets_result, transactions_data, output_file)
+    end_time = time.time()
+    print(f"Execution time: {(end_time - start_time)}")
+
+print("Execution complete.")
