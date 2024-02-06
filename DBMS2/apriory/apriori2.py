@@ -115,7 +115,8 @@ def generate_association_rules(frequent_itemsets, transactions, output_file):
     for combination in result:
         output_file.write(f"{combination[0]} -> {combination[1]} = {combination[2]:.2f}%\n")
 
-# Example usage:
+
+# __main__
 file_path = 'input500.txt'
 out_path = 'output.txt'
 min_support_count = 10
