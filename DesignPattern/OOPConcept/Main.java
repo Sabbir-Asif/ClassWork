@@ -45,9 +45,12 @@ public class Main {
                 System.out.println("Person not found.");
             }
 
+            scanner.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private static Person findPerson(ArrayList<Person> peopleList, String name) {

@@ -1,0 +1,3 @@
+interface Sofa {
+    void lieOn();
+}
