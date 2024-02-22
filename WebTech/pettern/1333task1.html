@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multiplication Table</title>
+<style>
+    table {
+        border-collapse: collapse;
+    }
+    td {
+        border: 1px solid black;
+        padding: 3px;
+    }
+</style>
+</head>
+<body>
+
+<div id="container"></div>
+
+<script>
+// Define the alphabet
+const alphabet = '0ABCDEFGHI';
+
+// Function to get the letter at a certain index considering wrap around
+function getLetter(index) {
+    if(index<=9){
+    return alphabet[index % alphabet.length];
+    }
+    else{
+        let text = '';
+        const tensDigit = Math.floor(index / 10);
+        const onesDigit = index % 10;
+        const result = alphabet[tensDigit % alphabet.length] + alphabet[onesDigit % alphabet.length];
+        return result;
+    }
+}
+
+// Function to generate the table
+function generateTable() {
+    const table = document.createElement('table');
+    table.setAttribute('cellpadding', '3px');
+    table.setAttribute('cellspacing', '0px');
+
+    // Outer loop for rows
+    for (let i = 1; i <= 6; i++) {
+        const row = document.createElement('tr');
+
+        // Inner loop for columns
+        for (let j = 1; j <= 5; j++) {
+            const cell = document.createElement('td');
+            let text = '';
+
+            // Calculate the multiplication and get the result
+            const result = getLetter(i) + ' * ' + getLetter(j) + ' = ' + getLetter((i)*(j))+","+getLetter((i)+(j));
+            text += result;
+
+            // Add the text to the cell
+            cell.textContent = text;
+            row.appendChild(cell);
+        }
+
+        // Add the row to the table
+        table.appendChild(row);
+    }
+
+    return table;
+}
+
+// Get the container element and append the generated table
+const container = document.getElementById('container');
+container.appendChild(generateTable());
+</script>
+
+</body>
+</html>

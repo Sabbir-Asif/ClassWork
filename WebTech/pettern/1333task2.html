@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Scholarship Application Form</title>
+  <script>
+    function validateStudentId() {
+      var studentId = document.forms["applicationForm"]["studentId"].value;
+
+        var studentIdParts = studentId.split('-');
+        if (studentIdParts.length === 3 &&
+          studentIdParts[0].length === 4 &&
+          !isNaN(studentIdParts[0]) &&
+          studentIdParts[1].length === 3 &&
+          !isNaN(studentIdParts[1]) &&
+          studentIdParts[2].length === 2 &&
+          !isNaN(studentIdParts[2])
+        ) {
+          return true;
+        } else {
+          alert("Invalid Student ID format. Please use the format: yyyy-xxx-xx");
+          document.forms["applicationForm"]["studentId"].value = "";
+          return false;
+        }
+      }
+
+    function validateFullName() {
+      var fullName = document.forms["applicationForm"]["fullName"].value;
+
+      if (fullName.length < 6 || fullName.length > 30) {
+        alert("Full Name should be between 6 and 30 characters.");
+        return false;
+      }
+
+      return true;
+    }
+
+    function validateEmail() {
+      var email = document.forms["applicationForm"]["email"].value;
+
+      var emailParts = email.split('@');
+      if (emailParts.length !== 2 || emailParts[0].length === 0 || emailParts[1].indexOf('.') === -1) {
+        alert("Invalid Email address.");
+        return false;
+      }
+
+      return true;
+    }
+    function validatePhoneNo() {
+      var phoneNo = document.forms["applicationForm"]["phoneNo"].value;
+
+      var validPhonePrefixes = ['+88017', '+88019', '+88016', '+88013', '+88014', '017', '019', '013', '014'];
+      var validPrefix = false;
+
+      for (var i = 0; i < validPhonePrefixes.length; i++) {
+        if (phoneNo.startsWith(validPhonePrefixes[i])) {
+          validPrefix = true;
+          break;
+        }
+      }
+
+      if (validPrefix) {
+
+        if (phoneNo.startsWith('+') && phoneNo.length !== 14) {
+          alert("Invalid Phone Number. Must have 14 characters if it starts with '+'.");
+          document.forms["applicationForm"]["phoneNo"].value = "";
+          return false;
+        } else if (!phoneNo.startsWith('+') && phoneNo.length !== 13) {
+          alert("Invalid Phone Number. Must have 13 characters if it starts with '0'.");
+          document.forms["applicationForm"]["phoneNo"].value = "";
+          return false;
+        }
+      } else {
+        alert("Invalid Phone Number. Please use a valid prefix.");
+        document.forms["applicationForm"]["phoneNo"].value = "";
+        return false;
+      }
+
+      return true;
+    }
+
+    function validateDob() {
+  var dob = document.forms["applicationForm"]["dob"].value;
+
+  var dobDate = new Date(dob);
+  var currentDate = new Date();
+  var minDobDate = new Date("01/01/1997");
+  var maxDobDate = new Date("01/01/2000");
+
+  if (isNaN(dobDate.getTime()) || dobDate > currentDate || dobDate < minDobDate || dobDate >= maxDobDate) {
+    alert("Invalid Date of Birth. Please enter a valid date between 01/01/1997 and 01/01/2000.");
+    document.forms["applicationForm"]["dob"].value = "";
+    return false;
+  }
+
+  return true;
+}
+
+
+    function validateCgpa() {
+      var cgpa = document.forms["applicationForm"]["cgpa"].value;
+
+      if (parseFloat(cgpa) <= 3.90) {
+        alert("CGPA must be greater than 3.90 to apply for the scholarship.");
+        return false;
+      }
+
+      return true;
+    }
+
+    function validateForm() {
+      return validateStudentId() &&
+        validateFullName() &&
+        validateEmail() &&
+        validatePhoneNo() &&
+        validateDob() &&
+        validateCgpa();
+    }
+  </script>
+</head>
+
+<body>
+
+  <h3>Scholarship Application Form</h3>
+  <h5>* denotes mandatory field</h5>
+  <form id="applicationForm" method="post" onsubmit="return validateForm()">
+    <label>Student Id*</label><br>
+    <input type="text" name="studentId" onblur="validateStudentId()" /><br>
+
+    <label>Full Name*</label><br>
+    <input type="text" name="fullName" onblur="validateFullName()" /><br>
+
+    <label>Email Address*</label><br>
+    <input type="text" name="email" onblur="validateEmail()" /><br>
+
+    <label>Date of Birth*</label><br>
+    <input type="datetime" name="dob" onblur="validateDob()" /><br>
+
+    <label>CGPA*</label><br>
+    <input type="text" name="cgpa" onblur="validateCgpa()" /><br>
+
+    <label>Phone No*</label><br>
+    <input type="text" name="phoneNo" onblur="validatePhoneNo()" /><br>
+
+    <input type="submit" value="Submit" />
+  </form>
+
+</body>
+
+</html>
